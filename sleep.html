@@ -1,0 +1,700 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Tracking | Human Digital Twin</title>
+    <style>
+        :root {
+            --cream: #f8f5ef;
+            --paper: #fffdf9;
+            --ink: #272521;
+            --muted: #77736c;
+            --line: #ded9d0;
+            --accent: #88745f;
+            --accent-dark: #6d5b49;
+            --soft: #eee8df;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 235px;
+            background: var(--paper);
+            border-right: 1px solid var(--line);
+            padding: 30px 18px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .nav-bottom {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+        }
+
+        .nav-link.signout {
+            color: #c0392b;
+        }
+
+        .nav-link.signout:hover {
+            background: #fbe9e7;
+            color: #a93226;
+        }
+
+        .brand {
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 38px;
+        }
+
+        .brand span {
+            display: block;
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 5px;
+            letter-spacing: 2px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 13px 15px;
+            margin-bottom: 7px;
+            text-decoration: none;
+            color: var(--muted);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .nav-link span {
+            margin-right: 10px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--soft);
+            color: var(--accent-dark);
+        }
+
+        .main {
+            flex: 1;
+            padding: 40px;
+            min-width: 0;
+        }
+
+        .top {
+            margin-bottom: 30px;
+        }
+
+        .top p {
+            color: var(--muted);
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        h1 {
+            font-size: 30px;
+            font-weight: 600;
+        }
+
+        h2 {
+            font-size: 19px;
+            margin-bottom: 20px;
+        }
+
+        .date {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 23px;
+            margin-bottom: 25px;
+        }
+
+        .summary .card {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .summary-value {
+            font-size: 27px;
+            font-weight: bold;
+            margin: 12px 0 7px;
+        }
+
+        .summary-note {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid var(--line);
+            border-radius: 7px;
+            background: var(--paper);
+            color: var(--ink);
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 85px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        .duration-box {
+            background: var(--soft);
+            padding: 13px;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 13px 24px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: var(--accent-dark);
+        }
+
+        #sleepFormMessage {
+            font-size: 13px;
+            color: var(--accent-dark);
+            margin-top: 12px;
+        }
+
+        .sleep-item {
+            border-bottom: 1px solid var(--line);
+            padding: 17px 0;
+        }
+
+        .sleep-item:last-child {
+            border-bottom: none;
+        }
+
+        .sleep-item h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .sleep-item p {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 5px;
+            line-height: 1.6;
+        }
+
+        .insight {
+            line-height: 1.7;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        @media (max-width: 850px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--line);
+                padding: 18px;
+            }
+
+            .brand {
+                margin-bottom: 15px;
+            }
+
+            .sidebar nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .nav-link {
+                margin: 0;
+                padding: 10px;
+            }
+
+            .main {
+                padding: 22px;
+            }
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="brand">
+            HUMAN DIGITAL TWIN
+            <span>YOUR DIGITAL SELF</span>
+        </div>
+
+        <nav>
+            <a href="index.html" class="nav-link"><span>⌂</span>Dashboard</a>
+            <a href="my-twin.html" class="nav-link"><span>♙</span>My Twin</a>
+            <a href="activity.html" class="nav-link"><span>◷</span>Activity</a>
+            <a href="mood.html" class="nav-link"><span>♡</span>Mood</a>
+            <a href="sleep.html" class="nav-link active"><span>☾</span>Sleep</a>
+            <a href="habits.html" class="nav-link"><span>✓</span>Habits</a>
+            <a href="analytics.html" class="nav-link"><span>▥</span>Analytics</a>
+            <a href="predictions.html" class="nav-link"><span>✦</span>Predictions</a>
+        </nav>
+
+        <div class="nav-bottom">
+            <a href="settings.html" class="nav-link"><span>⚙</span>Settings</a>
+            <a href="profile.html" class="nav-link"><span>○</span>Profile</a>
+            <a href="login.html" class="nav-link"><span>↪</span>Sign out</a>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <header class="top">
+            <h1>Sleep Tracking</h1>
+            <p>Understand your sleeping patterns and recovery.</p>
+            <div class="date" id="todayDate"></div>
+        </header>
+
+        <section class="summary">
+            <div class="card">
+                <div class="summary-label">Total Sleep Records</div>
+                <div class="summary-value" id="totalSleep">0</div>
+                <div class="summary-note">Your recorded sleep sessions</div>
+            </div>
+
+            <div class="card">
+                <div class="summary-label">Latest Sleep Duration</div>
+                <div class="summary-value" id="latestDuration">—</div>
+                <div class="summary-note">Your most recent sleep duration</div>
+            </div>
+
+            <div class="card">
+                <div class="summary-label">Latest Sleep Quality</div>
+                <div class="summary-value" id="latestQuality">—</div>
+                <div class="summary-note">Your recorded sleep quality</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Record Your Sleep</h2>
+
+            <form id="sleepForm">
+                <div class="form-grid">
+
+                    <div class="field">
+                        <label for="sleepDate">Date</label>
+                        <input type="date" id="sleepDate" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="bedtime">Bedtime</label>
+                        <input type="time" id="bedtime" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="wakeTime">Wake-up Time</label>
+                        <input type="time" id="wakeTime" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Calculated Sleep Duration</label>
+                        <div class="duration-box" id="durationPreview">
+                            Enter bedtime and wake-up time
+                        </div>
+                    </div>
+
+                    <div class="field full">
+                        <label for="quality">Sleep Quality</label>
+                        <select id="quality" required>
+                            <option value="">Choose sleep quality</option>
+                            <option value="Excellent">Excellent</option>
+                            <option value="Good">Good</option>
+                            <option value="Average">Average</option>
+                            <option value="Poor">Poor</option>
+                        </select>
+                    </div>
+
+                    <div class="field full">
+                        <label for="sleepNotes">Notes (optional)</label>
+                        <textarea id="sleepNotes" placeholder="How did you sleep?"></textarea>
+                    </div>
+
+                    <div class="field full">
+                        <button type="submit">Save Sleep Record</button>
+                    </div>
+
+                </div>
+            </form>
+
+            <p id="sleepFormMessage"></p>
+        </section>
+
+        <section class="card">
+            <h2>Your Sleep History</h2>
+            <div id="sleepHistory">Loading sleep records...</div>
+        </section>
+
+        <section class="card">
+            <h2>✦ Your Twin's Observation</h2>
+            <p class="insight" id="sleepInsight">
+                Start recording your sleep to help your digital twin understand your sleeping patterns.
+            </p>
+        </section>
+
+    </main>
+</div>
+
+<script>
+    let sleepRecords = [];
+
+    function getLocalDate() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
+
+    function formatDate(value) {
+        if (!value) return "—";
+        const parts = value.split("-");
+        if (parts.length !== 3) return value;
+
+        return new Date(
+            Number(parts[0]),
+            Number(parts[1]) - 1,
+            Number(parts[2])
+        ).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        });
+    }
+
+    function calculateDuration(bedtime, wakeTime) {
+        if (!bedtime || !wakeTime) return null;
+
+        const start = bedtime.split(":").map(Number);
+        const end = wakeTime.split(":").map(Number);
+
+        let startMinutes = start[0] * 60 + start[1];
+        let endMinutes = end[0] * 60 + end[1];
+
+        if (endMinutes <= startMinutes) {
+            endMinutes += 24 * 60;
+        }
+
+        const minutes = endMinutes - startMinutes;
+        const hours = minutes / 60;
+
+        return {
+            minutes,
+            text: `${Math.floor(minutes / 60)} hours ${minutes % 60} minutes`,
+            decimal: (hours).toFixed(2)
+        };
+    }
+
+    function updateDurationPreview() {
+        const result = calculateDuration(
+            document.getElementById("bedtime").value,
+            document.getElementById("wakeTime").value
+        );
+
+        document.getElementById("durationPreview").textContent =
+            result ? result.text : "Enter bedtime and wake-up time";
+    }
+
+    document.getElementById("bedtime").addEventListener("change", updateDurationPreview);
+    document.getElementById("wakeTime").addEventListener("change", updateDurationPreview);
+
+    async function loadSleepRecords() {
+        const userId = localStorage.getItem("userId");
+
+        if (!userId) {
+            document.getElementById("sleepHistory").textContent =
+                "Please log in again to view your sleep records.";
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `http://localhost:8080/api/sleep/user/${userId}`
+            );
+
+            if (!response.ok) {
+                throw new Error("Could not load sleep records.");
+            }
+
+            sleepRecords = await response.json();
+            updateSleepPage();
+
+        } catch (error) {
+            console.error("Sleep loading error:", error);
+            document.getElementById("sleepHistory").textContent =
+                "Unable to load sleep records. Please try again.";
+        }
+    }
+
+    function updateSleepPage() {
+        updateSummary();
+        updateSleepHistory();
+        updateSleepInsight();
+    }
+
+    function getLatestRecord() {
+        return [...sleepRecords].sort((a, b) =>
+            String(b.date || "").localeCompare(String(a.date || ""))
+        )[0];
+    }
+
+    function updateSummary() {
+        document.getElementById("totalSleep").textContent = sleepRecords.length;
+
+        if (sleepRecords.length === 0) {
+            document.getElementById("latestDuration").textContent = "—";
+            document.getElementById("latestQuality").textContent = "—";
+            return;
+        }
+
+        const latest = getLatestRecord();
+
+        document.getElementById("latestDuration").textContent =
+            latest.duration ? `${latest.duration} hrs` : "—";
+
+        document.getElementById("latestQuality").textContent =
+            latest.quality || "—";
+    }
+
+    function updateSleepHistory() {
+        const history = document.getElementById("sleepHistory");
+        history.innerHTML = "";
+
+        if (sleepRecords.length === 0) {
+            history.textContent =
+                "No sleep records yet. Add your first sleep entry.";
+            return;
+        }
+
+        const sorted = [...sleepRecords].sort((a, b) =>
+            String(b.date || "").localeCompare(String(a.date || ""))
+        );
+
+        sorted.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "sleep-item";
+
+            const heading = document.createElement("h3");
+            heading.textContent = "☾ " + formatDate(item.date);
+
+            const details = document.createElement("p");
+            details.textContent =
+                "Bedtime: " + (item.bedtime || "—") +
+                " · Wake-up: " + (item.wakeTime || "—");
+
+            const duration = document.createElement("p");
+            duration.textContent =
+                "Duration: " + (item.duration || "—") +
+                " hours · Quality: " + (item.quality || "—");
+
+            const notes = document.createElement("p");
+            notes.textContent = item.notes || "No notes added.";
+
+            card.appendChild(heading);
+            card.appendChild(details);
+            card.appendChild(duration);
+            card.appendChild(notes);
+
+            history.appendChild(card);
+        });
+    }
+
+    function updateSleepInsight() {
+        const insight = document.getElementById("sleepInsight");
+
+        if (sleepRecords.length === 0) {
+            insight.textContent =
+                "No sleep entries have been recorded yet. Start tracking your sleep to help your digital twin understand your recovery patterns.";
+            return;
+        }
+
+        const latest = getLatestRecord();
+
+        insight.textContent =
+            "Your latest sleep record shows " +
+            (latest.duration || "an unrecorded duration") +
+            " hours of sleep with " +
+            (latest.quality || "unrecorded") +
+            " quality. Continue tracking your sleep to help your digital twin understand your recovery patterns.";
+    }
+
+    document.getElementById("todayDate").textContent =
+        "Today · " + formatDate(getLocalDate());
+
+    document.getElementById("sleepDate").value = getLocalDate();
+
+    document.getElementById("sleepForm").addEventListener(
+        "submit",
+        async function(event) {
+            event.preventDefault();
+
+            const userId = localStorage.getItem("userId");
+            const message = document.getElementById("sleepFormMessage");
+
+            if (!userId) {
+                message.textContent = "Please log in again.";
+                return;
+            }
+
+            const bedtime = document.getElementById("bedtime").value;
+            const wakeTime = document.getElementById("wakeTime").value;
+            const result = calculateDuration(bedtime, wakeTime);
+
+            if (!result) {
+                message.textContent = "Please enter bedtime and wake-up time.";
+                return;
+            }
+
+            if (result.minutes > 24 * 60) {
+                message.textContent = "Please check your sleep times.";
+                return;
+            }
+
+            const sleep = {
+                date: document.getElementById("sleepDate").value,
+                bedtime: bedtime,
+                wakeTime: wakeTime,
+                duration: result.decimal,
+                quality: document.getElementById("quality").value,
+                notes: document.getElementById("sleepNotes").value,
+                user: { id: Number(userId) }
+            };
+
+            if (!sleep.date || !sleep.quality) {
+                message.textContent = "Please complete all required fields.";
+                return;
+            }
+
+            message.textContent = "Saving sleep record...";
+
+            try {
+                const response = await fetch("http://localhost:8080/api/sleep", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(sleep)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Could not save sleep record.");
+                }
+
+                message.textContent = "Sleep record saved successfully!";
+
+                document.getElementById("sleepForm").reset();
+                document.getElementById("sleepDate").value = getLocalDate();
+                document.getElementById("durationPreview").textContent =
+                    "Enter bedtime and wake-up time";
+
+                await loadSleepRecords();
+
+            } catch (error) {
+                console.error("Sleep saving error:", error);
+                message.textContent =
+                    "Unable to save sleep record. Please try again.";
+            }
+        }
+    );
+
+    window.addEventListener("load", loadSleepRecords);
+</script>
+</body>
+</html>

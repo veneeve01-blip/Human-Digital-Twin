@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Tracking | Human Digital Twin</title>
+
+    <style>
+        :root {
+            --cream: #f8f5ef;
+            --paper: #fffdf9;
+            --ink: #272521;
+            --muted: #77736c;
+            --line: #ded9d0;
+            --accent: #88745f;
+            --accent-dark: #6d5b49;
+            --soft: #eee8df;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 245px;
+            height: 100vh;
+            background: var(--paper);
+            border-right: 1px solid var(--line);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px;
+            margin-bottom: 45px;
+        }
+
+        .logo-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo h2 {
+            font-size: 15px;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--muted);
+        }
+
+        .navigation,
+        .sidebar-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--muted);
+            padding: 13px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            font-size: 14px;
+        }
+
+        .nav-link span {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--soft);
+            color: var(--accent-dark);
+        }
+
+        .nav-link.active {
+            font-weight: 600;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .sign-out {
+            margin-top: 12px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            padding: 12px 14px;
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 45px 55px;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .date-box {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card,
+        .card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            padding: 23px;
+        }
+
+        .summary-title {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        .summary-value {
+            font-size: 27px;
+            font-weight: 500;
+        }
+
+        .summary-description {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 22px;
+        }
+
+        #moodForm {
+            display: grid;
+            gap: 12px;
+        }
+
+        #moodForm label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-dark);
+        }
+
+        #moodForm input,
+        #moodForm select,
+        #moodForm textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: white;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        #moodForm textarea {
+            resize: vertical;
+            min-height: 85px;
+        }
+
+        #moodForm button {
+            padding: 13px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        #moodForm button:hover {
+            background: var(--accent-dark);
+        }
+
+        #moodFormMessage {
+            font-size: 13px;
+            color: var(--accent-dark);
+        }
+
+        .mood-history {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mood-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .mood-item:last-child {
+            border-bottom: none;
+        }
+
+        .mood-item h3 {
+            font-size: 14px;
+            margin-bottom: 7px;
+            text-transform: capitalize;
+        }
+
+        .mood-item p {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .insight-card {
+            margin-top: 22px;
+            background: var(--soft);
+            border-radius: 13px;
+            padding: 22px;
+        }
+
+        .insight-card h3 {
+            font-size: 14px;
+            margin-bottom: 9px;
+        }
+
+        .insight-card p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        @media (max-width: 1000px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                width: 75px;
+                padding: 25px 10px;
+            }
+
+            .logo div:not(.logo-mark) {
+                display: none;
+            }
+
+            .nav-link {
+                font-size: 0;
+            }
+
+            .nav-link span {
+                font-size: 18px;
+            }
+
+            .main {
+                margin-left: 75px;
+                padding: 30px 20px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-mark">✦</div>
+            <div>
+                <h2>HUMAN</h2>
+                <span>DIGITAL TWIN</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+            <a href="index.html" class="nav-link"><span>⌂</span>Dashboard</a>
+            <a href="my-twin.html" class="nav-link"><span>✎</span>My Twin</a>
+            <a href="activity.html" class="nav-link"><span>◷</span>Activity</a>
+            <a href="mood.html" class="nav-link active"><span>♡</span>Mood</a>
+            <a href="sleep.html" class="nav-link"><span>☾</span>Sleep</a>
+            <a href="habits.html" class="nav-link"><span>✓</span>Habits</a>
+            <a href="analytics.html" class="nav-link"><span>◌</span>Analytics</a>
+            <a href="predictions.html" class="nav-link"><span>✦</span>Predictions</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="settings.html" class="nav-link"><span>⚙</span>Settings</a>
+            <a href="profile.html" class="nav-link"><span>○</span>Profile</a>
+            <a href="login.html" class="sign-out">Sign out</a>
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="page-header">
+            <div>
+                <h1>Mood Tracking</h1>
+                <p>Understand your emotions, energy and stress levels.</p>
+            </div>
+
+            <div class="date-box" id="todayDate"></div>
+        </div>
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+                <p class="summary-title">Total Mood Entries</p>
+                <div class="summary-value" id="totalMoods">0</div>
+                <p class="summary-description">Your recorded emotions</p>
+            </div>
+
+            <div class="summary-card">
+                <p class="summary-title">Latest Mood</p>
+                <div class="summary-value" id="latestMood">—</div>
+                <p class="summary-description">Your most recent entry</p>
+            </div>
+
+            <div class="summary-card">
+                <p class="summary-title">Latest Energy</p>
+                <div class="summary-value" id="latestEnergy">—</div>
+                <p class="summary-description">Your recorded energy level</p>
+            </div>
+
+        </section>
+
+        <section class="content-grid">
+
+            <div class="card">
+                <h2>How are you feeling?</h2>
+
+                <form id="moodForm">
+
+                    <label for="mood">Select your mood</label>
+                    <select id="mood" required>
+                        <option value="">Choose your mood</option>
+                        <option value="Happy">Happy</option>
+                        <option value="Excited">Excited</option>
+                        <option value="Calm">Calm</option>
+                        <option value="Neutral">Neutral</option>
+                        <option value="Sad">Sad</option>
+                        <option value="Anxious">Anxious</option>
+                        <option value="Stressed">Stressed</option>
+                        <option value="Tired">Tired</option>
+                    </select>
+
+                    <label for="energyLevel">Energy Level</label>
+                    <select id="energyLevel" required>
+                        <option value="">Choose energy level</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+
+                    <label for="stressLevel">Stress Level</label>
+                    <select id="stressLevel" required>
+                        <option value="">Choose stress level</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+
+                    <label for="moodDate">Date</label>
+                    <input type="date" id="moodDate" required>
+
+                    <label for="notes">Notes (optional)</label>
+                    <textarea id="notes" placeholder="Write a little about how you feel..."></textarea>
+
+                    <button type="submit">Save Mood</button>
+
+                    <p id="moodFormMessage"></p>
+
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Your Mood History</h2>
+
+                <div class="mood-history" id="moodHistory">
+                    <p>Loading your mood records...</p>
+                </div>
+            </div>
+
+        </section>
+
+        <div class="insight-card">
+            <h3>✦ Your Twin's Observation</h3>
+            <p id="moodInsight">
+                Your digital twin is observing your emotional patterns.
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+
+        let moods = [];
+
+        function getLocalDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, "0");
+            const day = String(today.getDate()).padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        }
+
+        function formatDate(value) {
+            if (!value) return "—";
+
+            const parts = value.split("-");
+
+            if (parts.length !== 3) return value;
+
+            return new Date(
+                Number(parts[0]),
+                Number(parts[1]) - 1,
+                Number(parts[2])
+            ).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            });
+        }
+
+        async function loadMoods() {
+
+            const userId = localStorage.getItem("userId");
+
+            if (!userId) {
+                document.getElementById("moodHistory").textContent =
+                    "Please log in again to view your mood records.";
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `http://localhost:8080/api/moods/user/${userId}`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Could not load mood records.");
+                }
+
+                moods = await response.json();
+
+                updateMoodPage();
+
+            } catch (error) {
+                console.error("Mood loading error:", error);
+
+                document.getElementById("moodHistory").textContent =
+                    "Unable to load mood records. Please try again.";
+            }
+        }
+
+        function updateMoodPage() {
+            updateSummary();
+            updateMoodHistory();
+            updateMoodInsight();
+        }
+
+        function updateSummary() {
+
+            document.getElementById("totalMoods").textContent =
+                moods.length;
+
+            if (moods.length === 0) {
+                document.getElementById("latestMood").textContent = "—";
+                document.getElementById("latestEnergy").textContent = "—";
+                return;
+            }
+
+            const latest = [...moods].sort((a, b) =>
+                String(b.date || "").localeCompare(String(a.date || ""))
+            )[0];
+
+            document.getElementById("latestMood").textContent =
+                latest.mood || "—";
+
+            document.getElementById("latestEnergy").textContent =
+                latest.energyLevel || "—";
+        }
+
+        function updateMoodHistory() {
+
+            const history = document.getElementById("moodHistory");
+            history.innerHTML = "";
+
+            if (moods.length === 0) {
+                history.textContent =
+                    "No mood records yet. Add your first mood entry.";
+                return;
+            }
+
+            const sorted = [...moods].sort((a, b) =>
+                String(b.date || "").localeCompare(String(a.date || ""))
+            );
+
+            sorted.forEach(item => {
+
+                const card = document.createElement("div");
+                card.className = "mood-item";
+
+                const heading = document.createElement("h3");
+                heading.textContent = "♡ " + (item.mood || "Mood");
+
+                const details = document.createElement("p");
+                details.textContent =
+                    "Energy: " + (item.energyLevel || "—") +
+                    " · Stress: " + (item.stressLevel || "—") +
+                    " · " + formatDate(item.date);
+
+                const notes = document.createElement("p");
+                notes.textContent = item.notes || "No notes added.";
+
+                card.appendChild(heading);
+                card.appendChild(details);
+                card.appendChild(notes);
+
+                history.appendChild(card);
+            });
+        }
+
+        function updateMoodInsight() {
+
+            const insight = document.getElementById("moodInsight");
+
+            if (moods.length === 0) {
+                insight.textContent =
+                    "No mood entries have been recorded yet. Start tracking your emotions to help your digital twin understand your patterns.";
+                return;
+            }
+
+            const latest = [...moods].sort((a, b) =>
+                String(b.date || "").localeCompare(String(a.date || ""))
+            )[0];
+
+            insight.textContent =
+                "Your latest recorded mood is " +
+                (latest.mood || "not specified") +
+                ", with " +
+                (latest.energyLevel || "unrecorded") +
+                " energy and " +
+                (latest.stressLevel || "unrecorded") +
+                " stress. Continue recording your moods to help your digital twin identify emotional patterns over time.";
+        }
+
+        document.getElementById("todayDate").textContent =
+            "Today · " + formatDate(getLocalDate());
+
+        document.getElementById("moodDate").value =
+            getLocalDate();
+
+        document.getElementById("moodForm").addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                const userId = localStorage.getItem("userId");
+                const message = document.getElementById("moodFormMessage");
+
+                if (!userId) {
+                    message.textContent = "Please log in again.";
+                    return;
+                }
+
+                const mood = {
+                    mood: document.getElementById("mood").value,
+                    energyLevel: document.getElementById("energyLevel").value,
+                    stressLevel: document.getElementById("stressLevel").value,
+                    date: document.getElementById("moodDate").value,
+                    notes: document.getElementById("notes").value,
+                    user: {
+                        id: Number(userId)
+                    }
+                };
+
+                message.textContent = "Saving mood...";
+
+                try {
+                    const response = await fetch(
+                        "http://localhost:8080/api/moods",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(mood)
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Could not save mood.");
+                    }
+
+                    message.textContent =
+                        "Mood saved successfully!";
+
+                    document.getElementById("moodForm").reset();
+                    document.getElementById("moodDate").value =
+                        getLocalDate();
+
+                    await loadMoods();
+
+                } catch (error) {
+                    console.error("Mood saving error:", error);
+
+                    message.textContent =
+                        "Unable to save mood. Please try again.";
+                }
+            }
+        );
+
+        window.addEventListener("load", loadMoods);
+
+    </script>
+
+</body>
+</html>

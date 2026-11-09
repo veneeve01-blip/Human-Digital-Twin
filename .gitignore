@@ -1,0 +1,9 @@
+ai-env/
+**/__pycache__/
+**/target/
+**/.env
+.env
+backend/src/main/resources/application.properties
+*.pyc
+.idea/
+.vscode/

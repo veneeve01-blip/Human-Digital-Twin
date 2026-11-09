@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habits | Human Digital Twin</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f8f5ef;
+            color: #4f463d;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 35px 25px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #88745f;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #82776b;
+        }
+
+        .card {
+            background: #fffdf9;
+            padding: 25px;
+            border-radius: 14px;
+            border: 1px solid #e8dfd3;
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            color: #88745f;
+            margin-bottom: 20px;
+        }
+
+        #habitForm {
+            display: grid;
+            gap: 12px;
+            max-width: 500px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #5f5144;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8cbbb;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 12px 18px;
+            background: #88745f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #6f5b48;
+        }
+
+        .habit-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        .habit-item {
+            background: #fffdf9;
+            border: 1px solid #e8dfd3;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .habit-item h3 {
+            color: #88745f;
+            margin-bottom: 12px;
+        }
+
+        .habit-item p {
+            margin-bottom: 9px;
+            font-size: 14px;
+        }
+
+        .habit-status {
+            font-weight: bold;
+            margin: 12px 0;
+        }
+
+        .empty-message {
+            color: #82776b;
+            padding: 15px 0;
+        }
+
+        #habitMessage {
+            color: #6f5b48;
+            margin-top: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #88745f;
+            text-decoration: none;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 245px;
+            height: 100vh;
+            background: #fffdf9;
+            border-right: 1px solid #ded9d0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px;
+            margin-bottom: 45px;
+        }
+
+        .logo-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #88745f;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo h2 {
+            font-size: 15px;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: #77736c;
+        }
+
+        .navigation {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #77736c;
+            padding: 13px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            font-size: 14px;
+        }
+
+        .nav-link span {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #eee8df;
+            color: #6d5b49;
+        }
+
+        .nav-link.active {
+            font-weight: 600;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }       
+
+        .sign-out {
+            margin-top: 12px;
+            text-decoration: none;
+            color: #77736c;
+            font-size: 13px;
+            padding: 12px 14px;
+        }
+
+        .app-layout {
+            min-height: 100vh;
+        }
+
+        .container {
+            margin-left: 245px;
+            max-width: none;
+            padding: 45px 55px;
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                width: 75px;
+                padding: 25px 10px;
+            }
+
+            .logo div:not(.logo-mark) {
+                display: none;
+            }
+
+            .nav-link {
+                font-size: 0;
+            }
+
+            .nav-link span {
+                font-size: 18px;
+            }
+
+            .container {
+                margin-left: 75px;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <div class="logo-mark">✦</div>
+
+                <div>
+                    <h2>HUMAN</h2>
+                    <span>DIGITAL TWIN</span>
+                </div>
+            </div>
+
+            <nav class="navigation">
+
+                <a href="index.html" class="nav-link">
+                    <span>⌂</span>
+                    Dashboard
+                </a>
+
+                <a href="my-twin.html" class="nav-link">
+                    <span>✎</span>
+                    My Twin
+                </a>
+
+                <a href="activity.html" class="nav-link">
+                    <span>◷</span>
+                    Activity
+                </a>
+
+                <a href="mood.html" class="nav-link">
+                    <span>♡</span>
+                    Mood
+                </a>
+
+                <a href="sleep.html" class="nav-link"><span>☾</span>Sleep</a>
+
+                <a href="habits.html" class="nav-link active">
+                    <span>✓</span>
+                    Habits
+                </a>
+
+                <a href="analytics.html" class="nav-link">
+                    <span>◌</span>
+                    Analytics
+                </a>
+
+                <a href="predictions.html" class="nav-link">
+                    <span>✦</span>
+                    Predictions
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <a href="settings.html" class="nav-link">
+                    <span>⚙</span>
+                    Settings
+                </a>
+
+                <a href="profile.html" class="nav-link">
+                    <span>○</span>
+                    Profile
+                </a>
+
+                <a href="login.html" class="sign-out">
+                    Sign out
+                </a>
+
+            </div>
+
+        </aside>
+
+        <main class="container">
+
+
+        <div class="header">
+            <h1>My Habits</h1>
+            <p>Build better routines and track your daily consistency.</p>
+        </div>
+
+        <section class="card">
+            <h2>Add a New Habit</h2>
+
+            <form id="habitForm">
+
+                <label for="habitName">Habit Name</label>
+                <input type="text" id="habitName"
+                       placeholder="Example: Morning exercise" required>
+
+                <label for="habitFrequency">Frequency</label>
+                <select id="habitFrequency" required>
+                    <option value="">Select frequency</option>
+                    <option value="Daily">Daily</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                </select>
+
+                <label for="habitDuration">Duration</label>
+                <input type="text" id="habitDuration"
+                       placeholder="Example: 30 minutes" required>
+
+                <button type="submit">Save Habit</button>
+
+                <p id="habitMessage"></p>
+
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>My Saved Habits</h2>
+            <div id="habitList" class="habit-list">
+                <p class="empty-message">Loading habits...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const userId = localStorage.getItem("userId");
+
+        async function loadHabits() {
+            const habitList = document.getElementById("habitList");
+
+            if (!userId) {
+                habitList.innerHTML =
+                    '<p class="empty-message">Please log in again.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `http://localhost:8080/api/habits/user/${userId}`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Unable to load habits.");
+                }
+
+                const habits = await response.json();
+
+                if (habits.length === 0) {
+                    habitList.innerHTML =
+                        '<p class="empty-message">No habits added yet. Start by adding your first habit!</p>';
+                    return;
+                }
+
+                habitList.innerHTML = "";
+
+                habits.forEach(habit => {
+                    const completed =
+                        habit.status?.toLowerCase() === "completed";
+
+                    const item = document.createElement("div");
+                    item.className = "habit-item";
+
+                    const heading = document.createElement("h3");
+                    heading.textContent = habit.habitName || "Untitled habit";
+
+                    const frequency = document.createElement("p");
+                    frequency.textContent = "Frequency: " + (habit.frequency || "-");
+
+                    const duration = document.createElement("p");
+                    duration.textContent = "Duration: " + (habit.duration || "-");
+
+                    const status = document.createElement("p");
+                    status.className = "habit-status";
+                    status.textContent = "Status: " + (habit.status || "Active");
+
+                    const button = document.createElement("button");
+                    button.textContent = completed
+                        ? "Mark as Active"
+                        : "Mark as Completed";
+
+                    button.addEventListener("click", () => {
+                        updateHabit(habit, completed);
+                    });
+
+                    item.append(heading, frequency, duration, status, button);
+                    habitList.appendChild(item);
+                });
+
+            } catch (error) {
+                habitList.innerHTML =
+                    '<p class="empty-message">Unable to load habits. Please check your backend.</p>';
+                console.error(error);
+            }
+        }
+
+        document.getElementById("habitForm").addEventListener(
+            "submit",
+            async function(event) {
+                event.preventDefault();
+
+                const message = document.getElementById("habitMessage");
+                message.textContent = "Saving habit...";
+
+                const habit = {
+                    habitName: document.getElementById("habitName").value,
+                    frequency: document.getElementById("habitFrequency").value,
+                    duration: document.getElementById("habitDuration").value,
+                    status: "Active",
+                    user: {
+                        id: Number(userId)
+                    }
+                };
+
+                try {
+                    const response = await fetch(
+                        "http://localhost:8080/api/habits",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(habit)
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Could not save habit.");
+                    }
+
+                    message.textContent = "Habit saved successfully!";
+                    document.getElementById("habitForm").reset();
+
+                    await loadHabits();
+
+                } catch (error) {
+                    message.textContent =
+                        "Unable to save habit. Please try again.";
+                    console.error(error);
+                }
+            }
+        );
+
+        async function updateHabit(habit, completed) {
+            const updatedHabit = {
+                id: habit.id,
+                habitName: habit.habitName,
+                frequency: habit.frequency,
+                duration: habit.duration,
+                status: completed ? "Active" : "Completed",
+                user: {
+                    id: Number(userId)
+                }
+            };
+
+            try {
+                const response = await fetch(
+                    "http://localhost:8080/api/habits",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(updatedHabit)
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Could not update habit.");
+                }
+
+                await loadHabits();
+
+            } catch (error) {
+                alert("Unable to update habit.");
+                console.error(error);
+            }
+        }
+
+        loadHabits();
+    </script>
+
+</body>
+</html>

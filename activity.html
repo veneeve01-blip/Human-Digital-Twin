@@ -1,0 +1,1430 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Activity | Human Digital Twin</title>
+
+    <style>
+        :root {
+            --cream: #f8f5ef;
+            --paper: #fffdf9;
+            --ink: #272521;
+            --muted: #77736c;
+            --line: #ded9d0;
+            --accent: #88745f;
+            --accent-dark: #6d5b49;
+            --soft: #eee8df;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 245px;
+            height: 100vh;
+            background: var(--paper);
+            border-right: 1px solid var(--line);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px;
+            margin-bottom: 45px;
+        }
+
+        .logo-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo h2 {
+            font-size: 15px;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--muted);
+        }
+
+        .navigation {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--muted);
+            padding: 13px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            font-size: 14px;
+            transition: 0.25s;
+        }
+
+        .nav-link span {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .nav-link:hover {
+            background: var(--soft);
+            color: var(--ink);
+        }
+
+        .nav-link.active {
+            background: var(--soft);
+            color: var(--accent-dark);
+            font-weight: 600;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .sign-out {
+            margin-top: 12px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            padding: 12px 14px;
+        }
+
+        .sign-out:hover {
+            color: var(--accent-dark);
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 45px 55px;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 35px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .date-box {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            padding: 22px;
+        }
+
+        .summary-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .summary-title {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .summary-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-dark);
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .summary-change {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 22px;
+        }
+
+        .card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .card-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .card-header span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .chart {
+            height: 250px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 10px 5px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .bar-container {
+            height: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar {
+            width: 55%;
+            max-width: 45px;
+            background: var(--accent);
+            border-radius: 7px 7px 0 0;
+            transition: 0.3s;
+            min-height: 15px;
+        }
+
+        .bar:hover {
+            opacity: 0.75;
+            transform: translateY(-4px);
+        }
+
+        .day {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--soft);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-dark);
+            font-size: 17px;
+        }
+
+        .activity-info {
+            flex: 1;
+        }
+
+        .activity-info h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .activity-info p {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .activity-time {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .insight-card {
+            margin-top: 22px;
+            background: var(--soft);
+            border-radius: 13px;
+            padding: 20px;
+        }
+
+        .insight-card h3 {
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .insight-card p {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 1000px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                width: 75px;
+                padding: 25px 10px;
+            }
+
+            .logo div:not(.logo-mark),
+            .nav-link:not(.active)::after,
+            .nav-link {
+                font-size: 0;
+            }
+
+            .nav-link span {
+                font-size: 18px;
+            }
+
+            .main {
+                margin-left: 75px;
+                padding: 30px 20px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        .add-activity-card {
+            background: #fffdf9;
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            border: 1px solid #e8dfd3;
+        }
+
+        .add-activity-card h2 {
+            color: #88745f;
+            margin-bottom: 20px;
+        }
+
+        #activityForm {
+            display: grid;
+            gap: 12px;
+            max-width: 500px;
+        }
+
+        #activityForm label {
+            color: #5f5144;
+            font-weight: 600;
+        }
+
+        #activityForm input,
+        #activityForm select {
+            padding: 12px;
+            border: 1px solid #d8cbbb;
+            border-radius: 8px;
+            background: #fff;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        #activityForm button {
+            padding: 12px;
+            background: #88745f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 8px;
+        }
+
+        #activityForm button:hover {
+            background: #6f5b48;
+        }
+
+        #activityFormMessage {
+            color: #6f5b48;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-mark">✦</div>
+
+            <div>
+                <h2>HUMAN</h2>
+                <span>DIGITAL TWIN</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+
+            <a href="index.html" class="nav-link">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="my-twin.html" class="nav-link">
+                <span>✎</span>
+                My Twin
+            </a>
+
+            <a href="activity.html" class="nav-link active">
+                <span>◷</span>
+                Activity
+            </a>
+
+            <a href="mood.html" class="nav-link">
+                 <span>♡</span>
+                Mood
+            </a>
+
+            <a href="sleep.html" class="nav-link"><span>☾</span>Sleep</a>
+
+            <a href="habits.html" class="nav-link">
+                <span>✓</span>
+                Habits
+            </a>
+
+            <a href="analytics.html" class="nav-link">
+                <span>◌</span>
+                Analytics
+            </a>
+
+            <a href="predictions.html" class="nav-link">
+                <span>✦</span>
+                Predictions
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="settings.html" class="nav-link">
+                <span>⚙</span>
+                Settings
+            </a>
+
+            <a href="profile.html" class="nav-link">
+                <span>○</span>
+                Profile
+            </a>
+
+            <a href="login.html" class="sign-out">
+                Sign out
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <div class="page-header">
+
+            <div>
+                <h1>Your Activity</h1>
+                <p>A simple view of how you've been spending your time.</p>
+            </div>
+
+            <div class="date-box" id="activityDate">
+                Loading...
+            </div>
+
+        </div>
+
+        <section class="add-activity-card">
+            <h2>Add New Activity</h2>
+
+             <form id="activityForm">
+                 <label for="activityType">Activity Type</label>
+                 <select id="activityType" required>
+                    <option value="">Select activity</option>
+                    <option value="Exercise">Exercise</option>
+                    <option value="Study">Study</option>
+                    <option value="Work">Work</option>
+                    <option value="Walking">Walking</option>
+                    <option value="Break">Break</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="activityDescription">Description</label>
+                <input type="text" id="activityDescription"
+                        placeholder="Example: Morning walk" required>
+
+                <label for="activityDate">Date</label>
+                <input type="date" id="activityDate" required>
+
+                <label for="activityDuration">Duration (minutes)</label>
+                <input type="number" id="activityDuration"
+                        min="1" placeholder="30" required>
+
+                <button type="submit">Save Activity</button>
+                <p id="activityFormMessage"></p>
+            </form>
+        </section>
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-top">
+                    <span class="summary-title">Active Time</span>
+                    <div class="summary-icon">◷</div>
+                </div>
+
+                <div class="summary-value" id="activeTime">
+                    0m
+                </div>
+
+                <div class="summary-change" id="activeChange">
+                    Based on your recorded activity
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-top">
+                    <span class="summary-title">Focus Time</span>
+                    <div class="summary-icon">◉</div>
+                </div>
+
+                <div class="summary-value" id="focusTime">
+                    0m
+                </div>
+
+                <div class="summary-change">
+                    Recorded focused activity
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-top">
+                    <span class="summary-title">Break Time</span>
+                    <div class="summary-icon">☕</div>
+                </div>
+
+                <div class="summary-value" id="breakTime">
+                    0m
+                </div>
+
+                <div class="summary-change">
+                    Based on recorded breaks
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-top">
+                    <span class="summary-title">Consistency</span>
+                    <div class="summary-icon">✓</div>
+                </div>
+
+                <div class="summary-value" id="consistency">
+                    0%
+                </div>
+
+                <div class="summary-change" id="consistencyText">
+                    Building your activity history
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="content-grid">
+
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <h2>Weekly Activity</h2>
+
+                    <span>Minutes active</span>
+
+                </div>
+
+
+                <div class="chart" id="weeklyChart">
+
+                    <div class="bar-container">
+                        <div class="bar" data-day="Mon"></div>
+                        <span class="day">Mon</span>
+                    </div>
+
+                    <div class="bar-container">
+                        <div class="bar" data-day="Tue"></div>
+                        <span class="day">Tue</span>
+                    </div>
+
+                    <div class="bar-container">
+                        <div class="bar" data-day="Wed"></div>
+                        <span class="day">Wed</span>
+                    </div>
+
+                    <div class="bar-container">
+                        <div class="bar" data-day="Thu"></div>
+                        <span class="day">Thu</span>
+                    </div>
+
+                    <div class="bar-container">
+                        <div class="bar" data-day="Fri"></div>
+                        <span class="day">Fri</span>
+                    </div>
+
+                    <div class="bar-container">
+                        <div class="bar" data-day="Sat"></div>
+                        <span class="day">Sat</span>
+                    </div>
+
+                    <div class="bar-container">
+                        <div class="bar" data-day="Sun"></div>
+                        <span class="day">Sun</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <h2>Recent Activity</h2>
+
+                    <span id="recentActivityDate">
+                        Loading...
+                    </span>
+
+                </div>
+
+
+                <div class="activity-list" id="activityList">
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon">
+                            ◷
+                        </div>
+
+                        <div class="activity-info">
+                            <h4>Loading activity...</h4>
+                            <p>Fetching your digital twin data</p>
+                        </div>
+
+                        <div class="activity-time">
+                            —
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="insight-card">
+
+            <h3>✦ Your Twin's Observation</h3>
+
+            <p id="activityInsight">
+                Your digital twin is analysing your recorded activity.
+            </p>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        let activities = [];
+
+
+        async function loadActivities() {
+
+            const userId =
+                localStorage.getItem("userId");
+
+            if (!userId) {
+
+                console.log("No user ID found.");
+
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `http://localhost:8080/api/activities/user/${userId}`
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Could not load activities."
+                    );
+                }
+
+
+                activities =
+                    await response.json();
+
+
+                console.log(
+                    "Activities loaded:",
+                    activities
+                );
+
+
+                updateActivityPage();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Activity loading error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        function updateActivityPage() {
+
+            updateDate();
+
+            updateSummary();
+
+            updateWeeklyChart();
+
+            updateRecentActivities();
+
+            updateInsight();
+
+        }
+
+
+        function updateDate() {
+
+            const dateElement =
+                document.getElementById("activityDate");
+
+            const today =
+                new Date();
+
+
+            dateElement.textContent =
+                "Today · " +
+                today.toLocaleDateString(
+                    "en-US",
+                    {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric"
+                    }
+                );
+
+        }
+
+
+        function updateSummary() {
+
+            let totalMinutes = 0;
+
+            activities.forEach(activity => {
+
+                if (activity.duration) {
+
+                    const duration =
+                        parseFloat(activity.duration);
+
+                    if (!isNaN(duration)) {
+
+                        totalMinutes += duration;
+
+                    }
+
+                }
+
+            });
+
+
+            const activeHours =
+                Math.floor(totalMinutes / 60);
+
+            const activeMinutes =
+                Math.round(totalMinutes % 60);
+
+
+            let activeText = "";
+
+            if (activeHours > 0) {
+
+                activeText =
+                    activeHours +
+                    "h " +
+                    activeMinutes +
+                    "m";
+
+            } else {
+
+                activeText =
+                    activeMinutes +
+                    "m";
+
+            }
+
+
+            document.getElementById(
+                "activeTime"
+            ).textContent =
+                activeText;
+
+
+            const focusActivities =
+                activities.filter(activity =>
+                    activity.activityType &&
+                    (
+                        activity.activityType
+                            .toLowerCase()
+                            .includes("focus") ||
+                        activity.activityType
+                            .toLowerCase()
+                            .includes("work") ||
+                        activity.activityType
+                            .toLowerCase()
+                            .includes("study")
+                    )
+                );
+
+
+            let focusMinutes = 0;
+
+
+            focusActivities.forEach(activity => {
+
+                const duration =
+                    parseFloat(activity.duration);
+
+                if (!isNaN(duration)) {
+                    focusMinutes += duration;
+                }
+
+            });
+
+
+            document.getElementById(
+                "focusTime"
+            ).textContent =
+                focusMinutes + "m";
+
+
+            const breakActivities =
+                activities.filter(activity =>
+                    activity.activityType &&
+                    activity.activityType
+                        .toLowerCase()
+                        .includes("break")
+                );
+
+
+            let breakMinutes = 0;
+
+
+            breakActivities.forEach(activity => {
+
+                const duration =
+                    parseFloat(activity.duration);
+
+                if (!isNaN(duration)) {
+                    breakMinutes += duration;
+                }
+
+            });
+
+
+            document.getElementById(
+                "breakTime"
+            ).textContent =
+                breakMinutes + "m";
+
+
+            let consistency = 0;
+
+
+            if (activities.length > 0) {
+
+                const uniqueDays =
+                    new Set(
+                        activities.map(
+                            activity => activity.date
+                        )
+                    ).size;
+
+
+                consistency =
+                    Math.min(
+                        Math.round(
+                            (uniqueDays / 7) * 100
+                        ),
+                        100
+                    );
+
+            }
+
+
+            document.getElementById(
+                "consistency"
+            ).textContent =
+                consistency + "%";
+
+
+            const consistencyText =
+                document.getElementById(
+                    "consistencyText"
+                );
+
+
+            if (consistency >= 80) {
+
+                consistencyText.textContent =
+                    "Strong routine";
+
+            } else if (consistency >= 50) {
+
+                consistencyText.textContent =
+                    "Building consistency";
+
+            } else {
+
+                consistencyText.textContent =
+                    "Keep recording activity";
+
+            }
+
+        }
+
+
+        function updateWeeklyChart() {
+
+            const bars =
+                document.querySelectorAll(
+                    "#weeklyChart .bar"
+                );
+
+
+            const dayTotals = {
+
+                Mon: 0,
+                Tue: 0,
+                Wed: 0,
+                Thu: 0,
+                Fri: 0,
+                Sat: 0,
+                Sun: 0
+
+            };
+
+
+            activities.forEach(activity => {
+
+                if (!activity.date) {
+                    return;
+                }
+
+
+                const date =
+                    new Date(activity.date);
+
+
+                const day =
+                    date.toLocaleDateString(
+                        "en-US",
+                        {
+                            weekday: "short"
+                        }
+                    );
+
+
+                const duration =
+                    parseFloat(
+                        activity.duration
+                    );
+
+
+                if (
+                    dayTotals[day] !== undefined &&
+                    !isNaN(duration)
+                ) {
+
+                    dayTotals[day] += duration;
+
+                }
+
+            });
+
+
+            let max =
+                Math.max(
+                    ...Object.values(dayTotals)
+                );
+
+
+            if (max === 0) {
+                max = 1;
+            }
+
+
+            bars.forEach(bar => {
+
+                const day =
+                    bar.dataset.day;
+
+
+                const value =
+                    dayTotals[day] || 0;
+
+
+                let height =
+                    (value / max) * 100;
+
+
+                if (value === 0) {
+                    height = 5;
+                }
+
+
+                bar.style.height =
+                    height + "%";
+
+            });
+
+
+            console.log(
+                "Weekly activity:",
+                dayTotals
+            );
+
+        }
+
+
+        function updateRecentActivities() {
+
+            const list =
+                document.getElementById(
+                    "activityList"
+                );
+
+
+            const dateElement =
+                document.getElementById(
+                    "recentActivityDate"
+                );
+
+
+            if (activities.length === 0) {
+
+                list.innerHTML = `
+                    <div class="activity-item">
+
+                        <div class="activity-icon">
+                            ◷
+                        </div>
+
+                        <div class="activity-info">
+                            <h4>No activity recorded</h4>
+                            <p>Your activity will appear here.</p>
+                        </div>
+
+                        <div class="activity-time">
+                            —
+                        </div>
+
+                    </div>
+                `;
+
+                dateElement.textContent =
+                    "No records";
+
+                return;
+
+            }
+
+
+            const sortedActivities =
+                [...activities].sort(
+                    (a, b) =>
+                        new Date(b.date) -
+                        new Date(a.date)
+                );
+
+
+            const recent =
+                sortedActivities.slice(0, 5);
+
+
+            dateElement.textContent =
+                formatDate(
+                    recent[0].date
+                );
+
+
+            list.innerHTML = "";
+
+
+            recent.forEach(activity => {
+
+                const item =
+                    document.createElement("div");
+
+                item.className =
+                    "activity-item";
+
+
+                const icon =
+                    getActivityIcon(
+                        activity.activityType
+                    );
+
+
+                item.innerHTML = `
+
+                    <div class="activity-icon">
+                        ${icon}
+                    </div>
+
+                    <div class="activity-info">
+
+                        <h4>
+                            ${activity.activityType || "Activity"}
+                        </h4>
+
+                        <p>
+                            ${activity.description || "Recorded activity"}
+                            · ${activity.duration || "0"} 
+                        </p>
+
+                    </div>
+
+                    <div class="activity-time">
+                        ${formatDate(activity.date)}
+                    </div>
+
+                `;
+
+
+                list.appendChild(item);
+
+            });
+
+        }
+
+
+        function getActivityIcon(type) {
+
+            if (!type) {
+                return "◷";
+            }
+
+
+            const value =
+                type.toLowerCase();
+
+
+            if (
+                value.includes("exercise") ||
+                value.includes("walk")
+            ) {
+
+                return "♧";
+
+            }
+
+
+            if (
+                value.includes("study") ||
+                value.includes("work")
+            ) {
+
+                return "⌨";
+
+            }
+
+
+            if (value.includes("break")) {
+
+                return "☕";
+
+            }
+
+
+            return "◷";
+
+        }
+
+
+        function formatDate(dateValue) {
+
+            if (!dateValue) {
+                return "—";
+            }
+
+
+            const date =
+                new Date(dateValue);
+
+
+            return date.toLocaleDateString(
+                "en-US",
+                {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric"
+                }
+            );
+
+        }
+
+
+        function updateInsight() {
+
+            const insight =
+                document.getElementById(
+                    "activityInsight"
+                );
+
+
+            if (activities.length === 0) {
+
+                insight.textContent =
+                    "No activity has been recorded yet. Start adding activities to help your digital twin understand your routine.";
+
+                return;
+
+            }
+
+
+            const totalMinutes =
+                activities.reduce(
+                    (total, activity) => {
+
+                        const duration =
+                            parseFloat(
+                                activity.duration
+                            );
+
+                        return total +
+                            (
+                                isNaN(duration)
+                                    ? 0
+                                    : duration
+                            );
+
+                    },
+                    0
+                );
+
+
+            if (activities.length === 1) {
+
+                insight.textContent =
+                    "Your digital twin has recorded your first activity. Continue adding activities so it can identify patterns in your routine over time.";
+
+                return;
+
+            }
+
+
+            insight.textContent =
+                "Your digital twin has recorded " +
+                activities.length +
+                " activities with a total of " +
+                totalMinutes +
+                " minutes of active time. More activity data will help reveal stronger behavioral patterns.";
+
+        }
+
+        document.getElementById("activityDate").value =
+            new Date().toISOString().split("T")[0];
+
+        document.getElementById("activityForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const userId = localStorage.getItem("userId");
+
+            if (!userId) {
+                document.getElementById("activityFormMessage").textContent =
+                    "Please log in again.";
+                return;
+            }
+
+            const activity = {
+                activityType: document.getElementById("activityType").value,
+                description: document.getElementById("activityDescription").value,
+                date: document.getElementById("activityDate").value,
+                duration: document.getElementById("activityDuration").value,
+                user: {
+                    id: Number(userId)
+                }
+            };
+
+            const message = document.getElementById("activityFormMessage");
+            message.textContent = "Saving activity...";
+
+            try {
+                const response = await fetch("http://localhost:8080/api/activities", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(activity)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Could not save activity.");
+                }
+
+                message.textContent = "Activity saved successfully!";
+
+                document.getElementById("activityDescription").value = "";
+                document.getElementById("activityDuration").value = "";
+
+                await loadActivities();
+
+            } catch (error) {
+                message.textContent = "Unable to save activity. Please try again.";
+                console.error(error);
+            }
+        });
+
+
+        window.addEventListener(
+            "load",
+            loadActivities
+        );
+
+    </script>
+
+</body>
+</html>

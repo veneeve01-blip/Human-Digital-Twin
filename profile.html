@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Human Digital Twin - Profile</title>
+
+    <style>
+
+        :root {
+            --cream: #f8f5ef;
+            --paper: #fffdf9;
+            --ink: #272521;
+            --muted: #77736c;
+            --line: #ded9d0;
+            --accent: #88745f;
+            --accent-dark: #6d5b49;
+            --soft: #eee8df;
+            --success: #667b68;
+            --danger: #a85650;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+        }
+
+        .sidebar {
+            width: 245px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: var(--paper);
+            border-right: 1px solid var(--line);
+            padding: 30px 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px;
+            margin-bottom: 45px;
+        }
+
+        .logo-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo h2 {
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--muted);
+        }
+
+        .navigation {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--muted);
+            padding: 12px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--soft);
+            color: var(--ink);
+        }
+
+        .nav-link.active {
+            background: var(--soft);
+            color: var(--accent-dark);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sign-out {
+            color: var(--danger);
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 42px 50px;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .profile-header {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            max-width: 1100px;
+            margin-bottom: 22px;
+        }
+
+        .avatar {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: var(--soft);
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .profile-name h2 {
+            font-size: 23px;
+            margin-bottom: 6px;
+        }
+
+        .profile-name p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .status {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            color: var(--success);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 22px;
+            max-width: 1100px;
+        }
+
+        .card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 25px;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .card-description {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-item {
+            padding: 15px 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .info-item:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .info-item span {
+            display: block;
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 5px;
+        }
+
+        .info-item strong {
+            font-size: 14px;
+        }
+
+        .twin-box {
+            background: var(--soft);
+            border-radius: 14px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .twin-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .twin-icon {
+            width: 35px;
+            height: 35px;
+            background: var(--accent);
+            color: white;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .twin-title h3 {
+            font-size: 14px;
+        }
+
+        .twin-box p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .trait {
+            background: var(--soft);
+            border: 1px solid var(--line);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--accent-dark);
+        }
+
+        .button-area {
+            max-width: 1100px;
+            margin-top: 22px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .save-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .save-btn:hover {
+            background: var(--accent-dark);
+        }
+
+        .message {
+            color: var(--success);
+            font-size: 13px;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .message.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 900px) {
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .navigation {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar-bottom {
+                margin-top: 15px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 30px 20px;
+            }
+
+            .profile-header {
+                flex-wrap: wrap;
+            }
+
+            .status {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-mark">
+            ✦
+        </div>
+
+        <div>
+
+            <h2>HUMAN</h2>
+
+            <span>
+                DIGITAL TWIN
+            </span>
+
+        </div>
+
+    </div>
+
+    <nav class="navigation">
+
+        <a href="index.html" class="nav-link">
+            <span class="nav-icon">⌂</span>
+            Dashboard
+        </a>
+
+        <a href="my-twin.html" class="nav-link">
+            <span class="nav-icon">◉</span>
+            My Twin
+        </a>
+
+        <a href="activity.html" class="nav-link">
+            <span class="nav-icon">◷</span>
+            Activity
+        </a>
+
+        <a href="mood.html" class="nav-link">
+            <span>♡</span>
+            Mood
+        </a>
+
+        <a href="sleep.html" class="nav-link"><span>☾</span>Sleep</a>
+
+        <a href="habits.html" class="nav-link">
+            <span>✓</span>
+            Habits
+        </a>
+
+        <a href="analytics.html" class="nav-link">
+            <span class="nav-icon">▥</span>
+            Analytics
+        </a>
+
+        <a href="predictions.html" class="nav-link">
+            <span class="nav-icon">✦</span>
+            Predictions
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <a href="settings.html" class="nav-link">
+            <span class="nav-icon">⚙</span>
+            Settings
+        </a>
+
+        <a href="profile.html" class="nav-link active">
+            <span class="nav-icon">◯</span>
+            Profile
+        </a>
+
+        <a href="login.html" class="nav-link sign-out">
+            <span class="nav-icon">↪</span>
+            Sign out
+        </a>
+
+    </div>
+
+</aside>
+
+<main class="main">
+
+    <div class="page-header">
+
+        <h1>My Profile</h1>
+
+        <p>
+            Tell your Human Digital Twin more about you.
+        </p>
+
+    </div>
+
+    <section class="profile-header">
+
+        <div class="avatar" id="avatar">
+            V
+        </div>
+
+        <div class="profile-name">
+
+            <h2 id="profileName">
+                Loading...
+            </h2>
+
+            <p id="profileEmail">
+                Loading...
+            </p>
+
+        </div>
+
+        <div class="status">
+
+            <span class="status-dot"></span>
+
+            Digital Twin Active
+
+        </div>
+
+    </section>
+
+    <div class="profile-grid">
+
+        <section class="card">
+
+            <h2>About You</h2>
+
+            <p class="card-description">
+                Help your Digital Twin understand who you are.
+            </p>
+
+            <div class="form-group">
+
+                <label for="name">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email address"
+                >
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="dob">
+                        Date of Birth
+                    </label>
+
+                    <input
+                        type="date"
+                        id="dob"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="location">
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        placeholder="City / Country"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="occupation">
+                    Occupation
+                </label>
+
+                <input
+                    type="text"
+                    id="occupation"
+                    placeholder="What do you do?"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="interests">
+                    Interests
+                </label>
+
+                <input
+                    type="text"
+                    id="interests"
+                    placeholder="Music, sports, art, technology..."
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="about">
+                    About Me
+                </label>
+
+                <textarea
+                    id="about"
+                    placeholder="Tell your Digital Twin about your personality, habits, interests or anything you'd like it to know..."
+                ></textarea>
+
+            </div>
+
+        </section>
+
+        <section class="card">
+
+            <h2>Digital Twin Profile</h2>
+
+            <p class="card-description">
+                Information about how your Digital Twin understands you.
+            </p>
+
+            <div class="info-item">
+
+                <span>
+                    Twin Status
+                </span>
+
+                <strong>
+                    Active
+                </strong>
+
+            </div>
+
+            <div class="info-item">
+
+                <span>
+                    Learning Status
+                </span>
+
+                <strong>
+                    Continuously Learning
+                </strong>
+
+            </div>
+
+            <div class="info-item">
+
+                <span>
+                    Profile Completion
+                </span>
+
+                <strong id="completion">
+                    0%
+                </strong>
+
+            </div>
+
+            <div class="info-item">
+
+                <span>
+                    Twin Version
+                </span>
+
+                <strong>
+                    v1.0
+                </strong>
+
+            </div>
+
+            <div class="twin-box">
+
+                <div class="twin-title">
+
+                    <div class="twin-icon">
+                        ✦
+                    </div>
+
+                    <h3>
+                        Personality Snapshot
+                    </h3>
+
+                </div>
+
+                <p>
+                    Your Digital Twin gradually identifies
+                    patterns in your behavior, preferences,
+                    routines and interactions.
+                </p>
+
+                <div class="traits">
+
+                    <span class="trait">
+                        Adaptive
+                    </span>
+
+                    <span class="trait">
+                        Personalized
+                    </span>
+
+                    <span class="trait">
+                        Learning
+                    </span>
+
+                    <span class="trait">
+                        Predictive
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="twin-box">
+
+                <div class="twin-title">
+
+                    <div class="twin-icon">
+                        ◉
+                    </div>
+
+                    <h3>
+                        How Your Twin Works
+                    </h3>
+
+                </div>
+
+                <p>
+                    Your Digital Twin uses information about
+                    your activities and behavioral patterns
+                    to create a personalized digital
+                    representation of you.
+                </p>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <div class="button-area">
+
+        <button
+            class="save-btn"
+            onclick="saveProfile()"
+        >
+            Save Profile
+        </button>
+
+        <span
+            class="message"
+            id="message"
+        >
+            ✓ Profile saved successfully
+        </span>
+
+    </div>
+
+</main>
+
+<script>
+
+let userId = null;
+let currentProfile = null;
+
+async function loadProfile() {
+
+    userId = localStorage.getItem("userId");
+
+    if (!userId) {
+
+        console.log("No user ID found.");
+
+        return;
+    }
+
+    try {
+
+        const twinResponse = await fetch(
+            `http://localhost:8080/api/twin/${userId}`
+        );
+
+        if (!twinResponse.ok) {
+
+            throw new Error(
+                "Could not load user data."
+            );
+        }
+
+        const twinData =
+            await twinResponse.json();
+
+        if (twinData.user) {
+
+            document.getElementById("name").value =
+                twinData.user.name || "";
+
+            document.getElementById("email").value =
+                twinData.user.email || "";
+
+            updateProfilePreview(
+                twinData.user.name,
+                twinData.user.email
+            );
+
+        }
+
+        const profileResponse = await fetch(
+            `http://localhost:8080/api/profiles/user/${userId}`
+        );
+
+        if (profileResponse.ok) {
+
+            currentProfile =
+                await profileResponse.json();
+
+            populateProfile(
+                currentProfile
+            );
+
+        }
+
+        calculateCompletion();
+
+        console.log(
+            "Profile loaded from backend:",
+            twinData,
+            currentProfile
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Profile loading error:",
+            error
+        );
+
+    }
+}
+
+function populateProfile(profile) {
+
+    document.getElementById("location").value =
+        profile.location || "";
+
+    document.getElementById("occupation").value =
+        profile.occupation || "";
+
+    document.getElementById("interests").value =
+        profile.interests || "";
+
+    document.getElementById("about").value =
+        profile.about || "";
+
+    if (profile.age) {
+
+        const age = parseInt(profile.age);
+
+        if (!isNaN(age)) {
+
+            const today = new Date();
+
+            const estimatedBirthYear =
+                today.getFullYear() - age;
+
+            document.getElementById("dob").value =
+                estimatedBirthYear +
+                "-01-01";
+        }
+    }
+
+    calculateCompletion();
+}
+
+function calculateAge(dateOfBirth) {
+
+    if (!dateOfBirth) {
+        return "";
+    }
+
+    const birthDate =
+        new Date(dateOfBirth);
+
+    const today =
+        new Date();
+
+    let age =
+        today.getFullYear() -
+        birthDate.getFullYear();
+
+    const monthDifference =
+        today.getMonth() -
+        birthDate.getMonth();
+
+    if (
+        monthDifference < 0 ||
+        (
+            monthDifference === 0 &&
+            today.getDate() < birthDate.getDate()
+        )
+    ) {
+        age--;
+    }
+
+    return age;
+}
+
+async function saveProfile() {
+
+    if (!userId) {
+
+        alert(
+            "No logged-in user found."
+        );
+
+        return;
+    }
+
+    const name =
+        document.getElementById("name").value.trim();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const dob =
+        document.getElementById("dob").value;
+
+    const location =
+        document.getElementById("location").value.trim();
+
+    const occupation =
+        document.getElementById("occupation").value.trim();
+
+    const interests =
+        document.getElementById("interests").value.trim();
+
+    const about =
+        document.getElementById("about").value.trim();
+
+    if (!name || !email) {
+
+        alert(
+            "Name and email are required."
+        );
+
+        return;
+    }
+
+    try {
+
+        const userResponse = await fetch(
+            `http://localhost:8080/api/users/${userId}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email
+                })
+            }
+        );
+
+        if (!userResponse.ok) {
+
+            const errorData =
+                await userResponse.json();
+
+            throw new Error(
+                errorData.message ||
+                "Could not update user."
+            );
+        }
+
+        const age =
+            calculateAge(dob);
+
+        const profileData = {
+
+            age:
+                age ? String(age) : "",
+
+            occupation:
+                occupation,
+
+            location:
+                location,
+
+            hobbies:
+                currentProfile &&
+                currentProfile.hobbies
+                    ? currentProfile.hobbies
+                    : "Music",
+
+            goals:
+                currentProfile &&
+                currentProfile.goals
+                    ? currentProfile.goals
+                    : "Build my career",
+
+            interests:
+                interests,
+
+            about:
+                about,
+
+            user: {
+                id:
+                    Number(userId)
+            }
+        };
+
+        const profileResponse = await fetch(
+            "http://localhost:8080/api/profiles",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body:
+                    JSON.stringify(profileData)
+            }
+        );
+
+        if (!profileResponse.ok) {
+
+            const errorData =
+                await profileResponse.json();
+
+            throw new Error(
+                errorData.message ||
+                "Could not save profile."
+            );
+        }
+
+        currentProfile =
+            await profileResponse.json();
+
+        localStorage.setItem(
+            "userName",
+            name
+        );
+
+        localStorage.setItem(
+            "userEmail",
+            email
+        );
+
+        updateProfilePreview(
+            name,
+            email
+        );
+
+        calculateCompletion();
+
+        const message =
+            document.getElementById("message");
+
+        message.textContent =
+            "✓ Profile saved to database";
+
+        message.classList.add("show");
+
+        setTimeout(() => {
+
+            message.classList.remove(
+                "show"
+            );
+
+        }, 2500);
+
+        console.log(
+            "Profile saved to backend:",
+            currentProfile
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Profile save error:",
+            error
+        );
+
+        alert(
+            "Could not save profile: " +
+            error.message
+        );
+    }
+}
+
+function updateProfilePreview(
+    name,
+    email
+) {
+
+    const profileName =
+        document.getElementById(
+            "profileName"
+        );
+
+    const profileEmail =
+        document.getElementById(
+            "profileEmail"
+        );
+
+    const avatar =
+        document.getElementById(
+            "avatar"
+        );
+
+    if (profileName) {
+
+        profileName.textContent =
+            name || "Your Name";
+    }
+
+    if (profileEmail) {
+
+        profileEmail.textContent =
+            email ||
+            "your.email@example.com";
+    }
+
+    if (avatar) {
+
+        avatar.textContent =
+            name
+                ? name.charAt(0).toUpperCase()
+                : "V";
+    }
+}
+
+function updateLivePreview() {
+
+    const name =
+        document.getElementById(
+            "name"
+        ).value;
+
+    const email =
+        document.getElementById(
+            "email"
+        ).value;
+
+    updateProfilePreview(
+        name,
+        email
+    );
+
+    calculateCompletion();
+}
+
+function calculateCompletion() {
+
+    const fields = [
+
+        document.getElementById(
+            "name"
+        ).value,
+
+        document.getElementById(
+            "email"
+        ).value,
+
+        document.getElementById(
+            "dob"
+        ).value,
+
+        document.getElementById(
+            "location"
+        ).value,
+
+        document.getElementById(
+            "occupation"
+        ).value,
+
+        document.getElementById(
+            "interests"
+        ).value,
+
+        document.getElementById(
+            "about"
+        ).value
+
+    ];
+
+    const completed =
+        fields.filter(
+            field =>
+                field.trim() !== ""
+        ).length;
+
+    const percentage =
+        Math.round(
+            (
+                completed /
+                fields.length
+            ) * 100
+        );
+
+    document.getElementById(
+        "completion"
+    ).textContent =
+        percentage + "%";
+}
+
+document
+    .getElementById("name")
+    .addEventListener(
+        "input",
+        updateLivePreview
+    );
+
+document
+    .getElementById("email")
+    .addEventListener(
+        "input",
+        updateLivePreview
+    );
+
+document
+    .getElementById("dob")
+    .addEventListener(
+        "change",
+        calculateCompletion
+    );
+
+document
+    .getElementById("location")
+    .addEventListener(
+        "input",
+        calculateCompletion
+    );
+
+document
+    .getElementById("occupation")
+    .addEventListener(
+        "input",
+        calculateCompletion
+    );
+
+document
+    .getElementById("interests")
+    .addEventListener(
+        "input",
+        calculateCompletion
+    );
+
+document
+    .getElementById("about")
+    .addEventListener(
+        "input",
+        calculateCompletion
+    );
+
+window.addEventListener(
+    "load",
+    loadProfile
+);
+
+</script>
+
+</body>
+</html>

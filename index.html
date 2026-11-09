@@ -1,0 +1,490 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Human Digital Twin</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-mark">✦</div>
+
+            <div>
+                <h2>HUMAN</h2>
+                <span>DIGITAL TWIN</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+
+            <a href="#" class="nav-link active">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="my-twin.html" class="nav-link">
+                <span>✎</span>
+                My Twin
+            </a>
+
+            <a href="activity.html" class="nav-link">
+                <span>◷</span>
+                Activity
+            </a>
+
+            <a href="mood.html" class="nav-link">
+                <span>♡</span>
+                Mood
+            </a>
+
+            <a href="sleep.html" class="nav-link"><span>☾</span>Sleep</a>
+        
+
+            <a href="habits.html" class="nav-link">
+                <span>✓</span>
+                Habits
+            </a>
+
+            <a href="analytics.html" class="nav-link">
+                <span>◌</span>
+                Analytics
+            </a>
+
+            <a href="predictions.html" class="nav-link">
+                <span>✦</span>
+                Predictions
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="settings.html" class="nav-link">
+                <span>⚙</span>
+                Settings
+            </a>
+
+            <a href="profile.html" class="nav-link">
+                <span>○</span>
+                Profile
+            </a>
+
+            <a href="login.html" class="sign-out">
+                Sign out
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div class="welcome">
+
+                <p class="small-text">
+                    YOUR DIGITAL SPACE
+                </p>
+
+                <h1>
+                    Welcome to Your Digital Twin
+                </h1>
+
+                <p class="welcome-description">
+                    A quiet place to understand your habits,
+                    patterns and everyday progress.
+                </p>
+
+            </div>
+
+            <div class="profile">
+
+                <button class="notification" onclick="showNotification()">
+                    ♡
+                </button>
+
+                <div class="avatar">
+                    V
+                </div>
+
+                <div class="profile-details">
+                    <strong id="userName">Loading...</strong>
+                    <span>Student</span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ◷
+                </div>
+
+                <div>
+                    <p>Energy</p>
+                    <h2 id="energyValue">82%</h2>
+                    <small id="energyText">Feeling steady</small>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ◌
+                </div>
+
+                <div>
+                    <p>Focus</p>
+                    <h2 id="focusValue">76%</h2>
+                    <small id="focusText">Good concentration</small>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ♡
+                </div>
+
+                <div>
+                    <p>Well-being</p>
+                    <h2 id="wellbeingValue">89%</h2>
+                    <small id="wellbeingText">Looking positive</small>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ✦
+                </div>
+
+                <div>
+                    <p>Productivity</p>
+                    <h2 id="productivityValue">74%</h2>
+                    <small id="productivityText">Consistent progress</small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="twin-section">
+
+
+            <div class="twin-card">
+
+                <div class="section-title">
+
+                    <div>
+                        <p class="small-text">
+                            LIVE MODEL
+                        </p>
+
+                        <h2>
+                            Your Digital Twin
+                        </h2>
+                    </div>
+
+                    <span class="status">
+                        <i></i> Active
+                    </span>
+
+                </div>
+
+
+                <div class="twin-body">
+
+                    <div class="twin-visual">
+
+                        <div class="twin-circle">
+
+                            <div class="twin-person">
+                                ♙
+                            </div>
+
+                            <div class="pulse"></div>
+
+                        </div>
+
+                        <p>
+                            Reflecting your current state
+                        </p>
+
+                    </div>
+
+
+                    <div class="twin-info">
+
+                        <h3>
+                            Current State
+                        </h3>
+
+
+                        <div class="state">
+
+                            <span>Energy</span>
+
+                            <strong id="stateEnergy">
+                                High
+                            </strong>
+
+                        </div>
+
+
+                        <div class="state">
+
+                            <span>Mental Focus</span>
+
+                            <strong id="stateFocus">
+                                Good
+                            </strong>
+
+                        </div>
+
+
+                        <div class="state">
+
+                            <span>Activity</span>
+
+                            <strong id="stateActivity">
+                                Active
+                            </strong>
+
+                        </div>
+
+
+                        <div class="state">
+
+                            <span>Overall State</span>
+
+                            <strong id="stateOverall">
+                                Stable
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="prediction-card">
+
+                <p class="small-text">
+                    AI INSIGHT
+                </p>
+
+                <h2>
+                    A little look ahead.
+                </h2>
+
+
+                <div class="prediction-icon">
+                    ✦
+                </div>
+
+
+                <p class="prediction-text">
+                    Based on your recent activity patterns,
+                    your productivity is expected to remain
+                    stable over the next few days.
+                </p>
+
+
+                <button onclick="showAnalysis()">
+                    View Full Analysis
+                    <span>→</span>
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <section class="activity-card">
+
+            <div class="section-title">
+
+                <div>
+
+                    <p class="small-text">
+                        BEHAVIOR PATTERN
+                    </p>
+
+                    <h2>
+                        Activity Overview
+                    </h2>
+
+                </div>
+
+
+                <select id="periodSelect" onchange="changePeriod()">
+
+                    <option>
+                        Last 7 days
+                    </option>
+
+                    <option>
+                        Last 30 days
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="chart" id="activityChart">
+
+                <div class="chart-column">
+                    <div class="bar" data-day="Mon"></div>
+                    <span>Mon</span>
+                </div>
+
+                <div class="chart-column">
+                    <div class="bar" data-day="Tue"></div>
+                    <span>Tue</span>
+                </div>
+
+                <div class="chart-column">
+                    <div class="bar" data-day="Wed"></div>
+                    <span>Wed</span>
+                </div>
+
+                <div class="chart-column">
+                    <div class="bar" data-day="Thu"></div>
+                    <span>Thu</span>
+                </div>
+
+                <div class="chart-column">
+                    <div class="bar" data-day="Fri"></div>
+                    <span>Fri</span>
+                </div>
+
+                <div class="chart-column">
+                    <div class="bar" data-day="Sat"></div>
+                    <span>Sat</span>
+                </div>
+
+                <div class="chart-column">
+                    <div class="bar" data-day="Sun"></div>
+                    <span>Sun</span>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="activity-card">
+
+            <div class="section-title">
+                 <div>
+            <p class="small-text">DAILY ROUTINE</p>
+            <h2>Habits Overview</h2>
+        </div>
+
+        <a href="habits.html">View All →</a>
+    </div>
+
+    <div id="dashboardHabits">
+        <p>Loading your habits...</p>
+    </div>
+
+</section>
+
+
+        <section class="bottom-grid">
+
+            <div class="small-card">
+
+                <p class="small-text">
+                    YOUR PATTERN
+                </p>
+
+                <h3>
+                    You're most consistent in the evening.
+                </h3>
+
+                <p>
+                    Your recent activity shows stronger
+                    consistency between 5 PM and 8 PM.
+                </p>
+
+            </div>
+
+
+            <div class="small-card">
+
+                <p class="small-text">
+                    THIS WEEK
+                </p>
+
+                <h3>
+                    12h 40m
+                </h3>
+
+                <p>
+                    Total active learning and productive time.
+                </p>
+
+            </div>
+
+
+            <div class="small-card">
+
+                <p class="small-text">
+                    CURRENT STREAK
+                </p>
+
+                <h3>
+                    7 days
+                </h3>
+
+                <p>
+                    You've been building a consistent routine.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<div id="notification" class="notification-popup">
+    ✦ You're doing well. Keep going.
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>

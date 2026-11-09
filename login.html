@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Human Digital Twin</title>
+
+  <style>
+    :root {
+      --cream: #f8f5ef;
+      --white: #fffdf9;
+      --brown: #88745f;
+      --dark: #40372f;
+      --light-brown: #cbbca9;
+      --error: #b44b4b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--cream);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      height: 100vh;
+      background: var(--white);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+
+    .image-section {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .image-section img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(40, 32, 25, 0.18),
+        rgba(40, 32, 25, 0.48)
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 60px;
+    }
+
+    .image-text {
+      color: white;
+      max-width: 430px;
+    }
+
+    .image-text h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 34px;
+      font-weight: normal;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .image-text .tagline {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 22px;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .image-text p {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 360px;
+    }
+
+    .form-section {
+      width: 100%;
+      height: 100vh;
+      padding: 35px 55px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .logo {
+      color: var(--brown);
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      color: var(--dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 42px;
+      font-weight: normal;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #81766a;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 35px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #ddd5cb;
+      width: min(100%, 390px);
+    }
+
+    .tab {
+      border: none;
+      background: none;
+      padding-bottom: 12px;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #8b8177;
+    }
+
+    .tab.active {
+      color: var(--dark);
+      border-bottom: 2px solid var(--brown);
+    }
+
+    .form {
+      display: none;
+      width: min(100%, 390px);
+    }
+
+    .form.active {
+      display: block;
+    }
+
+    label {
+      display: block;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid #d9d0c6;
+      border-radius: 8px;
+      outline: none;
+      background: #fffefa;
+      color: var(--dark);
+      margin-bottom: 18px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    input:focus {
+      border-color: var(--brown);
+    }
+
+    .password-row {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-row input {
+      padding-right: 70px;
+    }
+
+    .show-password {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      border: none;
+      background: none;
+      color: var(--brown);
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+    }
+
+    .remember-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      color: #81766a;
+    }
+
+    .remember input {
+      width: auto;
+      margin: 0;
+    }
+
+    .forgot {
+      color: var(--brown);
+      text-decoration: none;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+    }
+
+    .main-button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: var(--brown);
+      color: white;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .main-button:hover {
+      opacity: 0.9;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #aaa097;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      margin: 15px 0;
+      width: min(100%, 390px);
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      background: #ddd5cb;
+      flex: 1;
+    }
+
+    .social-buttons {
+      display: flex;
+      gap: 10px;
+      width: min(100%, 390px);
+    }
+
+    .social-button {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #d9d0c6;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--dark);
+      font-family: Arial, sans-serif;
+    }
+
+    .message {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      margin-top: 10px;
+      color: #557a5b;
+    }
+
+    .message.error {
+      color: var(--error);
+    }
+
+    @media (max-width: 850px) {
+      .container {
+        display: block;
+        height: auto;
+      }
+
+      .image-section {
+        height: 42vh;
+        min-height: 280px;
+      }
+
+      .form-section {
+        height: auto;
+        min-height: 58vh;
+        padding: 35px 24px 50px;
+      }
+
+      .image-overlay {
+        padding: 35px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .image-section {
+        min-height: 250px;
+      }
+
+      .image-text h2 {
+        font-size: 28px;
+      }
+
+      .image-text .tagline {
+        font-size: 18px;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="image-section">
+
+      <img
+        src="pages/images/writing.jpeg"
+        alt="Writing"
+      >
+
+      <div class="image-overlay">
+
+        <div class="image-text">
+
+          <h2>
+            HUMAN DIGITAL TWIN
+          </h2>
+
+          <div class="tagline">
+            Make space for your thoughts.
+          </div>
+
+          <p>
+            A calm place to write, reflect and keep your ideas moving.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="form-section">
+
+      <div class="logo">
+        HUMAN DIGITAL TWIN
+      </div>
+
+      <h1>Welcome back.</h1>
+
+      <p class="subtitle">
+        Connect with your digital self.
+      </p>
+
+      <div class="tabs">
+
+        <button
+          type="button"
+          class="tab active"
+          id="loginTab"
+        >
+          Sign in
+        </button>
+
+        <button
+          type="button"
+          class="tab"
+          id="registerTab"
+        >
+          Create account
+        </button>
+
+      </div>
+
+
+      <!-- LOGIN FORM -->
+
+      <form
+        id="loginForm"
+        class="form active"
+      >
+
+        <label for="loginEmail">
+          EMAIL
+        </label>
+
+        <input
+          id="loginEmail"
+          type="email"
+          placeholder="Enter your email"
+          required
+        >
+
+
+        <label for="loginPassword">
+          PASSWORD
+        </label>
+
+        <div class="password-row">
+
+          <input
+            id="loginPassword"
+            type="password"
+            placeholder="Enter your password"
+            required
+          >
+
+          <button
+            type="button"
+            class="show-password"
+            data-target="loginPassword"
+          >
+            Show
+          </button>
+
+        </div>
+
+
+        <div class="remember-row">
+
+          <label class="remember">
+
+            <input
+              type="checkbox"
+              id="rememberMe"
+            >
+
+            Remember me
+
+          </label>
+
+          <a
+            href="#"
+            class="forgot"
+          >
+            Forgot password?
+          </a>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="main-button"
+        >
+          Sign in
+        </button>
+
+
+        <div
+          id="loginMessage"
+          class="message"
+        ></div>
+
+
+        <div class="divider">
+          OR
+        </div>
+
+
+        <div class="social-buttons">
+
+          <button
+            type="button"
+            class="social-button"
+          >
+            Google
+          </button>
+
+          <button
+            type="button"
+            class="social-button"
+          >
+            Apple
+          </button>
+
+        </div>
+
+      </form>
+
+
+      <!-- REGISTER FORM -->
+
+      <form
+        id="registerForm"
+        class="form"
+      >
+
+        <label for="registerName">
+          NAME
+        </label>
+
+        <input
+          id="registerName"
+          type="text"
+          placeholder="Enter your name"
+          required
+        >
+
+
+        <label for="registerEmail">
+          EMAIL
+        </label>
+
+        <input
+          id="registerEmail"
+          type="email"
+          placeholder="Enter your email"
+          required
+        >
+
+
+        <label for="registerPassword">
+          PASSWORD
+        </label>
+
+        <div class="password-row">
+
+          <input
+            id="registerPassword"
+            type="password"
+            placeholder="Create a password"
+            minlength="6"
+            required
+          >
+
+          <button
+            type="button"
+            class="show-password"
+            data-target="registerPassword"
+          >
+            Show
+          </button>
+
+        </div>
+
+
+        <label for="confirmPassword">
+          CONFIRM PASSWORD
+        </label>
+
+        <div class="password-row">
+
+          <input
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirm your password"
+            minlength="6"
+            required
+          >
+
+          <button
+            type="button"
+            class="show-password"
+            data-target="confirmPassword"
+          >
+            Show
+          </button>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="main-button"
+        >
+          Create account
+        </button>
+
+
+        <div
+          id="registerMessage"
+          class="message"
+        ></div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    /* TAB SWITCHING */
+
+    const loginTab =
+      document.getElementById("loginTab");
+
+    const registerTab =
+      document.getElementById("registerTab");
+
+    const loginForm =
+      document.getElementById("loginForm");
+
+    const registerForm =
+      document.getElementById("registerForm");
+
+
+    loginTab.addEventListener(
+      "click",
+      () => {
+
+        loginTab.classList.add("active");
+
+        registerTab.classList.remove("active");
+
+        loginForm.classList.add("active");
+
+        registerForm.classList.remove("active");
+
+      }
+    );
+
+
+    registerTab.addEventListener(
+      "click",
+      () => {
+
+        registerTab.classList.add("active");
+
+        loginTab.classList.remove("active");
+
+        registerForm.classList.add("active");
+
+        loginForm.classList.remove("active");
+
+      }
+    );
+
+
+    /* SHOW / HIDE PASSWORD */
+
+    document
+      .querySelectorAll(".show-password")
+      .forEach(
+        (button) => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              const target =
+                document.getElementById(
+                  button.dataset.target
+                );
+
+              if (
+                target.type === "password"
+              ) {
+
+                target.type = "text";
+
+                button.textContent = "Hide";
+
+              } else {
+
+                target.type = "password";
+
+                button.textContent = "Show";
+
+              }
+
+            }
+          );
+
+        }
+      );
+
+
+    /* LOGIN */
+
+    loginForm.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+
+
+        const email =
+          document
+            .getElementById("loginEmail")
+            .value
+            .trim();
+
+
+        const password =
+          document
+            .getElementById("loginPassword")
+            .value;
+
+
+        const message =
+          document.getElementById(
+            "loginMessage"
+          );
+
+
+        try {
+
+          const response =
+            await fetch(
+              "http://localhost:8080/api/users/login",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body: JSON.stringify({
+                  email: email,
+                  password: password
+                })
+              }
+            );
+
+
+          if (response.ok) {
+
+            const user =
+              await response.json();
+
+
+            if (!user) {
+
+              message.className =
+                "message error";
+
+              message.textContent =
+                "Invalid email or password.";
+
+              return;
+            }
+
+
+           localStorage.setItem(
+              "userId",
+              user.id
+            );
+
+            localStorage.setItem(
+              "userEmail",
+              user.email
+            );
+
+            localStorage.setItem(
+              "userName",
+              user.name
+            );
+
+
+            window.location.href =
+              "index.html";
+
+          } else {
+
+            message.className =
+              "message error";
+
+            message.textContent =
+              "Invalid email or password.";
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Login error:",
+            error
+          );
+
+          message.className =
+            "message error";
+
+          message.textContent =
+            "Backend connection failed.";
+
+        }
+
+      }
+    );
+
+
+    /* REGISTER */
+
+    registerForm.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+
+
+        const name =
+          document
+            .getElementById("registerName")
+            .value
+            .trim();
+
+
+        const email =
+          document
+            .getElementById("registerEmail")
+            .value
+            .trim();
+
+
+        const password =
+          document
+            .getElementById("registerPassword")
+            .value;
+
+
+        const confirmPassword =
+          document
+            .getElementById("confirmPassword")
+            .value;
+
+
+        const message =
+          document.getElementById(
+            "registerMessage"
+          );
+
+
+        message.textContent = "";
+
+
+        if (
+          password.length < 6
+        ) {
+
+          message.className =
+            "message error";
+
+          message.textContent =
+            "Password must be at least 6 characters.";
+
+          return;
+
+        }
+
+
+        if (
+          password !== confirmPassword
+        ) {
+
+          message.className =
+            "message error";
+
+          message.textContent =
+            "Passwords do not match.";
+
+          return;
+
+        }
+
+
+        const userData = {
+
+          name: name,
+
+          email: email,
+
+          password: password
+
+        };
+
+
+        console.log(
+          "Registration data:",
+          {
+            name: name,
+            email: email,
+            passwordLength:
+              password.length
+          }
+        );
+
+
+        try {
+
+          const response =
+            await fetch(
+              "http://localhost:8080/api/users",
+              {
+
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify(
+                    userData
+                  )
+
+              }
+            );
+
+
+          const responseText =
+            await response.text();
+
+
+          console.log(
+            "Registration status:",
+            response.status
+          );
+
+
+          console.log(
+            "Backend response:",
+            responseText
+          );
+
+
+          if (response.ok) {
+
+            message.className =
+              "message";
+
+            message.textContent =
+              "Account created successfully.";
+
+            registerForm.reset();
+
+          } else {
+
+            message.className =
+              "message error";
+
+
+            try {
+
+              const errorData =
+                JSON.parse(
+                  responseText
+                );
+
+
+              message.textContent =
+                errorData.message ||
+                "Could not create account.";
+
+            } catch {
+
+              message.textContent =
+                responseText ||
+                "Could not create account.";
+
+            }
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Registration error:",
+            error
+          );
+
+
+          message.className =
+            "message error";
+
+
+          message.textContent =
+            "Backend connection failed.";
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
